@@ -327,10 +327,67 @@
         .action {
             cursor: pointer;
         }
+
+        .sidepanel {
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: white;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidepanel a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidepanel a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidepanel .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+        }
+
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+        }
+
+        .openbtn:hover {
+            background-color: #444;
+        }
     </style>
 </head>
 
 <body>
+
+    <div id="mySidepanel" class="sidepanel">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeSidePannel()">×</a>
+        <div id="sidePanelContent">
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Clients</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+
     <div id="map"></div>
     <div id="info"></div>
 
@@ -390,6 +447,7 @@
         const filtersDiv = document.getElementById("filtersDiv");
         const infoDiv = document.getElementById("info");
         const amenitiesDiv = document.getElementById("amenities");
+        const sidePanelContent = document.getElementById("sidePanelContent");
 
 
         const searchLandMore = document.getElementById('searchLandMore');
@@ -2066,6 +2124,7 @@
                     center: [+mainData.admin['Project_Longitude'], +mainData.admin['Project_Latitude']],
                     zoom: +mainData.admin['Project_Zoom_Level']
                 })
+                openSidePannel()
             });
             map.on('mousemove', 'project_image', function (e) {
                 map.getCanvas().style.cursor = 'pointer';
@@ -2083,6 +2142,8 @@
                 console.log('webhook', webhook);
                 webHook(webhook)
                 updateAmenities(Amenity_ID)
+
+                openSidePannel()
             });
 
             map.on('mousemove', 'amenitiesicon', function (e) {
@@ -2193,6 +2254,7 @@
                     );
                 }
                 webHook(e.features[0].properties['webHook'])
+                openSidePannel(e.features[0].properties['webHook'])
             });
 
 
@@ -2262,6 +2324,14 @@
             }
         });
 
+        function openSidePannel(data) {
+            document.getElementById("mySidepanel").style.width = "350px";
+            sidePanelContent.innerHTML = JSON.stringify(data);
+        }
+        function closeSidePannel() {
+            document.getElementById("mySidepanel").style.width = "0";
+        }
+
         function webHook(url) {
             // console.log('url', url);
             if (!url || url === "") return;
@@ -2276,8 +2346,8 @@
 
         async function getObject(objectId) {
 
-            const knack_id = '612f747a09bde6001e9ee25d';
-            const knack_key = 'e5959d7a-101c-4635-99da-a23bab3e96ee';
+            const knack_id = '616391ee2e9161001e613faa';
+            const knack_key = '5a1d6530-0006-43dd-8834-483e1c6ec6ea';
             let keys = [];
             let res = [];
 
