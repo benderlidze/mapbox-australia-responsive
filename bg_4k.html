@@ -2254,7 +2254,19 @@
                     );
                 }
                 webHook(e.features[0].properties['webHook'])
-                openSidePannel(e.features[0].properties['webHook'])
+
+                const id = e.features[0].properties?.id;
+                if (id && +id > 0) {
+                    const html = `
+                    <div>
+                        <img src="data/Bingara_Local_Files/${id}/lot.png" style="width:100%">
+                    </div>
+                    <div>
+                        <img src="data/Bingara_Local_Files/${id}/floorplan.jpg" style="width:100%">
+                    </div>
+                    `
+                    openSidePannel(html)
+                }
             });
 
 
@@ -2325,8 +2337,8 @@
         });
 
         function openSidePannel(data) {
-            document.getElementById("mySidepanel").style.width = "350px";
-            sidePanelContent.innerHTML = JSON.stringify(data);
+            document.getElementById("mySidepanel").style.width = "450px";
+            sidePanelContent.innerHTML = data;
         }
         function closeSidePannel() {
             document.getElementById("mySidepanel").style.width = "0";
