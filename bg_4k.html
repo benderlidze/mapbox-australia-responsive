@@ -335,7 +335,7 @@
             height: 100%;
             top: 0;
             left: 0;
-            background-color:#4FAB8B;
+            background-color: #4FAB8B;
             overflow-x: hidden;
             transition: 0.5s;
             display: flex;
@@ -389,6 +389,11 @@
 
         .openbtn:hover {
             background-color: #444;
+        }
+
+        .lotItem {
+            padding: 5px;
+            font-size: 1.5em;
         }
     </style>
 </head>
@@ -2284,14 +2289,33 @@
                 webHook(e.features[0].properties['webHook'])
 
                 const id = e.features[0].properties?.id;
+                const lotData = mainData.lots.find(i => i['Lot_Number'] === id)
+
+                let lotText = '';
+                if (lotData) {
+                    lotText = `
+                    <div>
+                        <div class="lotItem">Lot Number: ${lotData['Lot_Number']}</div>
+                        <div class="lotItem">${lotData['Lot_Status']}</div>
+                        <div class="lotItem">Lot Width: ${lotData['Lot_Width']}m</div>
+                        <div class="lotItem">Lot Depth: ${lotData['Lot_Depth']}m</div>
+                        <div class="lotItem">Lot Size: ${lotData['Lot_Size']}m<sup>2</sup></div>
+                        <div class="lotItem">Land Price: ${lotData['Lot_Price']}</div>
+                        <div class="lotItem">Total Price</div>
+                    </div>
+                    `
+                }
+
+                // <div>
+                //         <img src="data/Bingara_Local_Files/${id}/floorplan.jpg" style="width:100%">
+                //     </div>
+
                 if (id && +id > 0) {
                     const html = `
                     <div>
                         <img src="data/Bingara_Local_Files/${id}/lot.png" style="width:100%">
                     </div>
-                    <div>
-                        <img src="data/Bingara_Local_Files/${id}/floorplan.jpg" style="width:100%">
-                    </div>
+                    ${lotText}
                     `
                     openSidePannel(html)
                 }
