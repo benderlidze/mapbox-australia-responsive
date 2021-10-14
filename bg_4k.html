@@ -335,10 +335,12 @@
             height: 100%;
             top: 0;
             left: 0;
-            background-color: white;
+            background-color:#4FAB8B;
             overflow-x: hidden;
             transition: 0.5s;
-            padding-top: 60px;
+            display: flex;
+            justify-content: center;
+            color: white;
         }
 
         .sidepanel a {
@@ -355,10 +357,25 @@
         }
 
         .sidepanel .closebtn {
+            display: flex;
             position: absolute;
-            top: 0;
-            right: 25px;
+            bottom: 300px;
             font-size: 36px;
+            border: 3px solid black;
+            border-radius: 100%;
+            align-content: center;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            color: white;
+            background-color: black;
+        }
+
+        .closebtn:hover {
+            background-color: #202020;
         }
 
         .openbtn {
@@ -379,13 +396,8 @@
 <body>
 
     <div id="mySidepanel" class="sidepanel">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeSidePannel()">×</a>
-        <div id="sidePanelContent">
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">Clients</a>
-            <a href="#">Contact</a>
-        </div>
+        <div class="closebtn" onclick="closeSidePannel()">×</div>
+        <div id="sidePanelContent"></div>
     </div>
 
     <div id="map"></div>
@@ -2198,6 +2210,22 @@
                     "features": amLilst
                 };
                 map.getSource("amenitiesInternal").setData(collection)
+
+
+                const props = e.features[0].properties;
+
+                if (Amenity_ID && +Amenity_ID > 0) {
+                    const html = `
+                    <div>
+                        <img src="data/POI/${Amenity_ID}.png" style="width:100%">
+                    </div>
+                    <div>
+                        <h2>${props['Amenity_Display_Title']}</h2>
+                    </div>
+                    
+                    `
+                    openSidePannel(html)
+                }
 
             });
             map.on('mouseup', 'amenitiesiconInternal', function (e) {
