@@ -81,13 +81,16 @@
 
         #searchPanelTop {
             position: fixed;
-            bottom: 0px;
+            /* bottom: 0px; */
             left: 0px;
             z-index: 100;
             width: 100%;
-            height: 200px;
+            height: 100px;
             box-sizing: border-box;
             transition: 0.3s;
+
+            display: flex;
+            align-items: center;
         }
 
         #searchPanel {
@@ -117,7 +120,7 @@
         #searchPanelTier2,
         #searchPanelTier3 {
             position: fixed;
-            bottom: -250px;
+            /* bottom: -250px; */
             left: 0px;
             z-index: 100;
             width: 100%;
@@ -131,14 +134,12 @@
 
         #searchLandMore {
             position: fixed;
-            bottom: -250px;
             left: 0px;
             z-index: 100;
             width: 100%;
             height: 100px;
             box-sizing: border-box;
             transition: 0.3s;
-            /* border: 4px solid blue; */
             display: flex;
             flex-direction: row;
         }
@@ -395,6 +396,93 @@
             padding: 5px;
             font-size: 1.5em;
         }
+
+        .buttonSearch {
+            width: 150px;
+            height: 150px;
+        }
+
+        .sliderClass {
+            width: 612px;
+        }
+
+        .hiddenPanel {
+            bottom: -250px;
+        }
+
+        .bottom50 {
+            bottom: 50px
+        }
+
+        #zoomButtons {
+            display: flex;
+            position: absolute;
+            right: 250px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order1 {
+            order: 1;
+        }
+
+        .order3 {
+            order: 3;
+        }
+
+        @media screen and (max-width: 1920px) {
+            .search-bar {
+                background-size: 500px 100px;
+            }
+
+            #mainSearchPanel {
+                height: 100px;
+            }
+
+            .am {
+                width: 75px;
+                height: 75px;
+                margin-right: 5px;
+                margin-left: 5px;
+            }
+
+            #searchPanelTop {
+                height: 100px;
+            }
+
+            .buttonSearch {
+                width: 75px;
+                height: 75px;
+            }
+
+            .sliderClass {
+                width: 200px;
+            }
+
+            .noUi-target {
+                height: 10px;
+            }
+
+            .noUi-horizontal .noUi-handle {
+                width: 28px;
+                height: 28px;
+                border: 2px solid white;
+                top: 3px;
+            }
+
+            .noUi-tooltip {
+                padding: 0px;
+                font-size: 14px;
+            }
+
+            .noUi-horizontal .noUi-origin>.noUi-tooltip {
+                bottom: 0px;
+            }
+
+            .bottom50 {
+                bottom: 0px
+            }
+        }
     </style>
 </head>
 
@@ -409,14 +497,18 @@
     <div id="info"></div>
 
     <div id="mainSearchPanel" class="search-bar">
-        <div style="position:absolute;top:90px;right:875px;">
-            ZOOM
+
+        <div id="zoomButtons">
+
+            <div style="order:2"> ZOOM </div>
+
         </div>
-        <div id="searchPanelTop">
-            <div style="position: absolute;top: 25px;">
-                <div id="amenities" style="display: inline;"></div>
-                <div id="searchPanelButtons" style="display: inline;margin-left:50px;"></div>
-            </div>
+
+        <div id="searchPanelTop" class="hiddenPanel bottom50">
+
+            <div id="amenities" style="display: inline;"></div>
+            <div id="searchPanelButtons" style="display: inline;margin-left:50px;"></div>
+
         </div>
         <div id="searchPanelMore">
             <div style="position: absolute; top:50px; left:650px;">
@@ -435,10 +527,10 @@
             </div>
         </div>
 
-        <div id="searchLandMore"></div>
-        <div id="searchPanelTier1"></div>
-        <div id="searchPanelTier2"></div>
-        <div id="searchPanelTier3"></div>
+        <div id="searchLandMore" class="hiddenPanel"></div>
+        <div id="searchPanelTier1" class="hiddenPanel"></div>
+        <div id="searchPanelTier2" class="hiddenPanel"></div>
+        <div id="searchPanelTier3" class="hiddenPanel"></div>
 
         <div id="searchPanel">
             <div style="position: absolute; top:50px; left:650px;">
@@ -455,12 +547,44 @@
                     <div id="price_slider"></div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
 
+        // const resolutionParams = () => {
+        //     const resolution = {
+        //         "4k": {
+        //             amenitiesButtons: {
+        //                 width: 150,
+        //                 height: 150
+        //             },
+        //             searchPanelTop: {
+        //                 height: 200
+        //             }
+        //         },
+        //         "fullHD": {
+        //             amenitiesButtons: {
+        //                 width: 75,
+        //                 height: 75
+        //             },
+        //             searchPanelTop: {
+        //                 height: 100
+        //             },
+        //             mainSearchPanel: {
+
+        //             }
+        //         }
+        //     }
+        //     if (window.innerWidth <= 1920) {
+        //         return resolution['fullHD']
+        //     }
+        //     return resolution["4k"]
+        // }
+        // const res = resolutionParams();
+
+
+        const zoomButtons = document.getElementById("zoomButtons");
         const filtersDiv = document.getElementById("filtersDiv");
         const infoDiv = document.getElementById("info");
         const amenitiesDiv = document.getElementById("amenities");
@@ -736,26 +860,33 @@
                 "searchPanelTier2",
                 "searchPanelTier3",
             ]
-            console.log('panel', panel);
+            console.log('pannelShow', panel);
 
+            //hide all pannels !!!
             panels.forEach(i => {
-                document.getElementById(i).style.bottom = "-250px";
+                //document.getElementById(i).style.bottom = "-250px";
+                document.getElementById(i).classList.add("hiddenPanel");
+                document.getElementById(i).classList.remove("bottom50");
             })
 
+            /*
             if (panel === "searchPanelTop") {
                 document.getElementById(panel).style.bottom = "0px";
             } else {
-                document.getElementById(panel).style.bottom = "50px";
+                document.getElementById(panel).classList.add("bottom50")
             }
 
-            if (panel === "searchPanelTier1") {
-                document.getElementById(panel).style.bottom = "25px";
-            }
+            // if (panel === "searchPanelTier1") {
+            //     document.getElementById(panel).style.bottom = "0px";
+            // }
+
+
             if (panel === "searchPanelTier2") {
-                document.getElementById(panel).style.bottom = "25px";
+                //document.getElementById(panel).style.bottom = "25px";
             }
+            */
 
-
+            document.getElementById(panel).classList.add("bottom50")
         }
 
         function createButton({
@@ -776,7 +907,7 @@
             let currentState = false;
             const { top, right, left } = position;
             var div = document.createElement('div');
-            div.className = "custom";
+            div.className = className || "custom";
 
             if (positionType) {
                 //position relative
@@ -801,8 +932,8 @@
             var imgOff = document.createElement('img');
             imgOff.setAttribute("class", className);
             imgOff.src = imgMouseDown;
-            imgOff.style.width = imgSize.width + "px"
-            imgOff.style.height = imgSize.height + "px"
+            // imgOff.style.width = imgSize.width + "px"
+            // imgOff.style.height = imgSize.height + "px"
             imgOff.style.display = "none";
             imgOff.onmouseup = changeImage;
             div.appendChild(imgOff)
@@ -812,8 +943,8 @@
             img.setAttribute("src", imgSrc);
             img.setAttribute("class", className);
             img.setAttribute("action", action);
-            img.style.width = imgSize.width + "px"
-            img.style.height = imgSize.height + "px"
+            //img.style.width = imgSize.width + "px"
+            //img.style.height = imgSize.height + "px"
 
             img.onmousedown = function (e) {
                 img.style.display = "none"
@@ -872,7 +1003,8 @@
 
         const buttonsControls = [
             {
-                layerId: "mainSearchPanel",
+                layerId: "zoomButtons",
+                positionType: "flex",
                 position: { top: 50, right: 950 },
                 imgSize: { width: 100, height: 100 },
                 callbackAction: function () {
@@ -883,12 +1015,13 @@
                 imgSrc: 'img/zoomin.png',
                 imgMouseDown: "img/zoomin_active.png",
                 imgHover: "",
-                className: "search-icon action",
+                className: "search-icon action order1",
                 action: ""
             },
 
             {
-                layerId: "mainSearchPanel",
+                layerId: "zoomButtons",
+                positionType: "flex",
                 position: { top: 50, right: 750 },
                 imgSize: { width: 100, height: 100 },
                 callbackAction: function () {
@@ -899,7 +1032,7 @@
                 imgSrc: 'img/zoomout.png',
                 imgMouseDown: "img/zoomout_active.png",
                 imgHover: "",
-                className: "search-icon action",
+                className: "search-icon action order3",
                 action: ""
             },
 
@@ -1116,31 +1249,41 @@
                             layerId: "searchPanelButtons",
                             positionType: 'inline',
                             position: { top: 10, right: 500 },
-                            imgSize: { width: 150, height: 150 },
                             padding: { left: 10 },
+                            imgSize: { width: 150, height: 150 },
                             callbackAction: function () {
                                 //switch to search panel
                                 console.log('bName', bName);
-                                if (bName === 'Land Only') {
 
-                                    searchPanelTop.style.bottom = "-250px";
-                                    searchPanel.style.bottom = "-250px";
-                                    searchPanelMore.style.bottom = "-250px";
-                                    searchPanelTier1.style.bottom = "-250px";
-                                    searchLandMore.style.bottom = "50px";
+                                if (bName === 'Land Only'){
+                                    pannelShow("searchLandMore")
                                 }
                                 if (bName === 'House & Land') {
-                                    searchPanelTop.style.bottom = "-250px";
-                                    searchPanel.style.bottom = "-250px";
-                                    searchPanelMore.style.bottom = "-250px";
-                                    searchLandMore.style.bottom = "-250px";
-                                    searchPanelTier1.style.bottom = "25px";
+                                    pannelShow("searchPanelTier1")
                                 }
+
+                                // if (bName === 'Land Only') {
+
+                                //     searchPanelTop.style.bottom = "-250px";
+                                //     searchPanel.style.bottom = "-250px";
+                                //     searchPanelMore.style.bottom = "-250px";
+
+                                //     searchPanelTier1.classList.add("hiddenPanel");
+                                //     searchLandMore.classList.add("bottom50");
+                                // }
+                                // if (bName === 'House & Land') {
+                                //     searchPanelTop.style.bottom = "-250px";
+                                //     searchPanel.style.bottom = "-250px";
+                                //     searchPanelMore.style.bottom = "-250px";
+
+                                //     searchLandMore.classList.remove("bottom50");
+                                //     searchPanelTier1.classList.add("bottom50")
+                                // }
                             },
                             imgSrc: `img/${bName}.png`,
                             imgMouseDown: `img/${bName}.png`,
                             imgHover: "",
-                            className: "search-icon action",
+                            className: "search-icon action buttonSearch",
                             action: ""
                         })
                     })
@@ -1359,7 +1502,7 @@
                         const sliderId = `${new Date().getTime()}_${filterVarible}`;
 
                         document.getElementById(layerDiv).insertAdjacentHTML('beforeend', `
-                        <div style="border:0px solid red; display:flex;width:612px;margin: 0px 45px; justify-content: center;">
+                        <div style="border:0px solid red; display:flex;margin: 0px 45px; justify-content: center;" class="sliderClass">
                             <div style="position:absolute;bottom:5px;color:white">
                                 ${label}
                             </div>
@@ -1807,9 +1950,9 @@
                         let amId = (new DOMParser()).parseFromString(i['Amenity_Category_ID'], 'text/html').querySelector('span');
                         amId = +amId.innerText;
 
-                        console.log('i[amenitiesListInternal]');
-                        console.log('i[Amenity_Category_Name]', i['Amenity_Category_Name']);
-                        console.log('i[Amenity_Category_ID]', amId);
+                        // console.log('i[amenitiesListInternal]');
+                        // console.log('i[Amenity_Category_Name]', i['Amenity_Category_Name']);
+                        // console.log('i[Amenity_Category_ID]', amId);
 
 
                         const latlng = [+i['Amenity Longitude'], +i['Amenity_Latitude']];
