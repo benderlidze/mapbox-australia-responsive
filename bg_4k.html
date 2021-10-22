@@ -405,6 +405,17 @@
         .lotItem {
             padding: 5px;
             font-size: 1.5em;
+            text-transform: uppercase;
+
+            display: flex;
+            align-content: center;
+            align-items: center;
+        }
+
+        .lotItem>span {
+            color: #D86C47;
+            display: inline-block;
+            width: 200px;
         }
 
         .buttonSearch {
@@ -472,6 +483,22 @@
             height: 85px;
             /* border: 2px solid;
             border-radius: 50%; */
+        }
+
+        .inlineRow {
+            display: flex;
+            align-items: center;
+            align-content: center;
+            justify-content: space-between;
+        }
+
+        .lotItem>img {
+            width: 50px;
+        }
+
+        .houseDescr>div:nth-child(1),
+        .houseDescr>div:nth-child(4) {
+            margin-top: 20px;
         }
 
         @media screen and (max-width: 1920px) {
@@ -2514,20 +2541,60 @@
 
                 const id = e.features[0].properties?.id;
                 const lotData = mainData.lots.find(i => i['Lot_Number'] === id)
-
                 let lotText = '';
+
                 if (lotData) {
-                    lotText = `
-                    <div>
-                        <div class="lotItem">Lot Number: ${lotData['Lot_Number']}</div>
-                        <div class="lotItem">${lotData['Lot_Status']}</div>
-                        <div class="lotItem">Lot Width: ${lotData['Lot_Width']}m</div>
-                        <div class="lotItem">Lot Depth: ${lotData['Lot_Depth']}m</div>
-                        <div class="lotItem">Lot Size: ${lotData['Lot_Size']}m<sup>2</sup></div>
-                        <div class="lotItem">Land Price: ${lotData['Lot_Price']}</div>
-                        <div class="lotItem">Total Price</div>
-                    </div>
-                    `
+
+                    console.log('lotData', lotData);
+                    console.log('lotData', lotData);
+
+                    if (lotData['Lot_Type'] === "Land") {
+                        lotText = `
+                        <div>
+                            <img src="data/Bingara_Local_Files/${id}/lot.png" style="width:100%">
+                        </div>
+                        <div>
+                            <div class="lotItem">Lot Number: ${lotData['Lot_Number']}</div>
+                            <div class="lotItem">${lotData['Lot_Status']}</div>
+                            <div class="lotItem">Lot Width: ${lotData['Lot_Width']}m</div>
+                            <div class="lotItem">Lot Depth: ${lotData['Lot_Depth']}m</div>
+                            <div class="lotItem">Lot Size: ${lotData['Lot_Size']}m<sup>2</sup></div>
+                            <div class="lotItem">Land Price: ${lotData['Lot_Price']}</div>
+                            <div class="lotItem">Total Price</div>
+                        </div>
+                        `
+                    }
+
+                    if (lotData['Lot_Type'] === "House & Land") {
+                        lotText = `
+                        <div>
+                            <div class="lotItem" >${lotData['Lot_Home_Facade']}</div>
+                        </div>
+                        <div>
+                            <img src="data/Lots/${id}/hero.jpg" style="width:100%">
+                        </div>
+                        <div>
+                            <div class="inlineRow">
+                                <div class="lotItem">Lot: ${lotData['Lot_Number']}</div>
+                                <div class="lotItem">${lotData['Lot_Status']}</div>
+                            </div>
+                            <div class="inlineRow">
+                                <div class="lotItem"><img src="img/bed.png">${lotData['Lot_Bedrooms']}</div>
+                                <div class="lotItem"><img src="img/bath.png">${lotData['Lot_Bathrooms']}</div>
+                                <div class="lotItem"><img src="img/bed.png">${lotData['Lot_CarSpaces']}</div>
+                            </div>
+
+                            <div class="houseDescr">
+                                <div class="lotItem"><span>Lot Width</span>: ${lotData['Lot_Width']}m</div>
+                                <div class="lotItem"><span>Lot Depth</span>: ${lotData['Lot_Depth']}m</div>
+                                <div class="lotItem"><span>Lot Size</span>: ${lotData['Lot_Size']}m<sup>2</sup></div>
+                                <div class="lotItem"><span>Land Price</span>: $${lotData['Lot_Land_Price']}</div>
+                                <div class="lotItem"><span>House price</span>: $${lotData['Lot_House_Price']}</div>
+                                <div class="lotItem"><span>Package price</span>: $${lotData['Lot_Price']}</div>
+                            </div>
+                        </div>
+                        `
+                    }
                 }
 
                 // <div>
@@ -2535,13 +2602,7 @@
                 //     </div>
 
                 if (id && +id > 0) {
-                    const html = `
-                    <div>
-                        <img src="data/Bingara_Local_Files/${id}/lot.png" style="width:100%">
-                    </div>
-                    ${lotText}
-                    `
-                    openSidePannel(html)
+                    openSidePannel(lotText)
                 }
             });
 
