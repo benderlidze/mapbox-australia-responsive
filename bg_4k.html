@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.3/nouislider.css"
         integrity="sha512-XXtRBFtk/QfR8GEWwQPYjrQBHQwjidXg0wo8HJi9YOaFycWqd2uWkjJoAyx8Mb/+H8uhvmf70EAIxDnQxrwrvw=="
         crossorigin="anonymous" />
-
+    <script src="js/qrcode.js"></script>
     <style>
         body {
             margin: 0;
@@ -347,7 +347,7 @@
 
         #sidePanelContent {
             box-sizing: border-box;
-            padding: 15px;
+            padding: 0px 15px;
         }
 
         #sidePanelContent h2 {
@@ -404,12 +404,17 @@
 
         .lotItem {
             padding: 5px;
-            font-size: 1.5em;
+            font-size: 1em;
             text-transform: uppercase;
 
             display: flex;
             align-content: center;
             align-items: center;
+        }
+
+        .lotItem.title {
+            font-size: 0.9em;
+            justify-content: flex-end;
         }
 
         .lotItem>span {
@@ -441,6 +446,7 @@
             right: 250px;
             justify-content: space-between;
             align-items: center;
+            height: 200px;
         }
 
         .order1 {
@@ -449,6 +455,9 @@
 
         .order3 {
             order: 3;
+        }
+        .order4 {
+            order: 4;
         }
 
         .searchTier1 {
@@ -498,12 +507,24 @@
 
         .houseDescr>div:nth-child(1),
         .houseDescr>div:nth-child(4) {
-            margin-top: 20px;
+            margin-top: 10px;
+        }
+
+        #qrcode {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @media screen and (max-width: 1920px) {
             .search-bar {
                 background-size: 500px 100px;
+            }
+
+            #zoomButtons {
+                height: 100px;
+                right: 170px;
             }
 
             #mainSearchPanel {
@@ -597,7 +618,7 @@
 
         <div id="zoomButtons">
 
-            <div style="order:2"> ZOOM </div>
+            <div style="order:2;padding-left: 10px;"> ZOOM </div>
 
         </div>
 
@@ -1112,7 +1133,7 @@
                 imgSrc: 'img/zoomin.png',
                 imgMouseDown: "img/zoomin_active.png",
                 imgHover: "",
-                className: "search-icon action order1",
+                className: "search-icon action order1 am",
                 action: ""
             },
 
@@ -1129,9 +1150,25 @@
                 imgSrc: 'img/zoomout.png',
                 imgMouseDown: "img/zoomout_active.png",
                 imgHover: "",
-                className: "search-icon action order3",
+                className: "search-icon action order3 am",
                 action: ""
             },
+
+            { //RESET BUTTON
+                positionType: 'flex',
+                position: { top: 10, left: 70 },
+                imgSize: { width: 150, height: 150 },
+                layerId: "zoomButtons",
+                callbackAction: function () {
+                    clearFilters()
+                    updateLotsGeometry("clearFilter")
+                },
+                imgSrc: 'img/Reset button.png',
+                imgMouseDown: "img/Reset button_not active.png",
+                className: "search-icon action moreAndClearButtons order4 am",
+                action: "",
+            }
+
 
         ].map(i => {
             return createButton(i);
@@ -1556,7 +1593,7 @@
                     createButton({ //CLEAR FILTERS BUTTON
                         // buttonType: "toggle",
                         positionType: 'flex',
-                        position: { top: 10, left: 1070 },
+                        position: { top: 10, left: 70 },
                         imgSize: { width: 150, height: 150 },
                         layerId: "searchPanelTier1",
                         callbackAction: function () {
@@ -2568,7 +2605,7 @@
                     if (lotData['Lot_Type'] === "House & Land") {
                         lotText = `
                         <div>
-                            <div class="lotItem" >${lotData['Lot_Home_Facade']}</div>
+                            <div class="lotItem title" >${lotData['Lot_Home_Facade']}</div>
                         </div>
                         <div>
                             <img src="data/Lots/${id}/hero.jpg" style="width:100%">
@@ -2588,21 +2625,31 @@
                                 <div class="lotItem"><span>Lot Width</span>: ${lotData['Lot_Width']}m</div>
                                 <div class="lotItem"><span>Lot Depth</span>: ${lotData['Lot_Depth']}m</div>
                                 <div class="lotItem"><span>Lot Size</span>: ${lotData['Lot_Size']}m<sup>2</sup></div>
-                                <div class="lotItem"><span>Land Price</span>: $${lotData['Lot_Land_Price']}</div>
-                                <div class="lotItem"><span>House price</span>: $${lotData['Lot_House_Price']}</div>
-                                <div class="lotItem"><span>Package price</span>: $${lotData['Lot_Price']}</div>
+                                <div class="lotItem"><span>Land Price</span>: $${Number(lotData['Lot_Land_Price']).toLocaleString('en')}</div>
+                                <div class="lotItem"><span>House price</span>: $${Number(lotData['Lot_House_Price']).toLocaleString('en')}</div>
+                                <div class="lotItem"><span>Package price</span>: $${Number(lotData['Lot_Price']).toLocaleString('en')}</div>
                             </div>
+
+                            <div id="qrcode"></div>
                         </div>
                         `
                     }
                 }
 
-                // <div>
-                //         <img src="data/Bingara_Local_Files/${id}/floorplan.jpg" style="width:100%">
-                //     </div>
-
                 if (id && +id > 0) {
                     openSidePannel(lotText)
+
+                    //generate qr code
+                    if (document.getElementById("qrcode")) {
+
+                        const pdf = (new DOMParser()).parseFromString(lotData['LOT_PDF'], 'text/html').querySelector('a').getAttribute("href");
+                        console.log('pdf', pdf);
+                        new QRCode(document.getElementById("qrcode"), {
+                            text: pdf,
+                            width: 170,
+                            height: 170,
+                        });
+                    }
                 }
             });
 
