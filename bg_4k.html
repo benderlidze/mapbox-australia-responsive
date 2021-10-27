@@ -351,7 +351,8 @@
             height: 100%;
             width: 450px;
         }
-        .lotLandOnly .lotItem{
+
+        .lotLandOnly .lotItem {
             text-transform: none;
             font-size: 1.2em;
             font-weight: bold;
@@ -2784,6 +2785,27 @@
         //===============KNACK=======================
         //===============KNACK=======================
 
+        //VIEW based EXAMPLE
+        /*
+        const knack_id = '616391ee2e9161001e613faa';
+        const knack_key = '5a1d6530-0006-43dd-8834-483e1c6ec6ea'; 
+        const fetchOptions = {
+                    cache: "force-cache"
+                }
+        fetch('https://api.knack.com/v1/pages/scene_50/views/view_50/records?rows_per_page=1000', {
+                        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, *cors, same-origin
+                        ...fetchOptions,
+                        credentials: 'same-origin', // include, *same-origin, omit
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Knack-Application-Id': knack_id, // change to your app's API info
+                            'X-Knack-REST-API-Key': knack_key
+                        },
+                    })
+                        .then(i => i.json()).then(i=>console.log(i))
+                */
+
         async function getObject(objectId) {
 
             const knack_id = '616391ee2e9161001e613faa';
@@ -2806,6 +2828,9 @@
                 .then(i => {
                     keys = i.fields
                 })
+
+            //https://api.knack.com/v1/pages/scene_key/views/view_key/records
+            //https://api.knack.com/v1/pages/scene_50/views/view_50/records
 
             await fetch('https://api.knack.com/v1/objects/' + objectId + '/records?rows_per_page=1000', {
                 method: 'GET', // *GET, POST, PUT, DELETE, etc.
